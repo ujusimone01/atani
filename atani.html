@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATANI — Satellite Services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --wine: #8B1A1A;
+      --wine-dark: #5C1010;
+      --wine-light: #B22222;
+      --orange: #D9541E;
+      --orange-light: #F07030;
+      --orange-glow: #FF6B35;
+      --white: #FFFFFF;
+      --off-white: #F8F6F3;
+      --light-gray: #EFEFED;
+      --mid-gray: #9A9490;
+      --dark: #1C1A18;
+      --text: #2E2B28;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+      --font-condensed: 'Barlow Condensed', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--white);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--light-gray); }
+    ::-webkit-scrollbar-thumb { background: var(--wine); border-radius: 2px; }
+
+    /* UTILITY */
+    .container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-condensed); font-size: 11px; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--orange); font-weight: 600;
+    }
+    .tag::before { content: ''; display: block; width: 24px; height: 2px; background: var(--orange); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-condensed); font-size: 13px; letter-spacing: 2px;
+      text-transform: uppercase; font-weight: 700; text-decoration: none;
+      padding: 14px 32px; border-radius: 2px; border: none;
+      cursor: pointer; transition: all .3s ease; position: relative; overflow: hidden;
+    }
+    .btn::after {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(255,255,255,.15);
+      transform: translateX(-100%); transition: transform .3s ease;
+    }
+    .btn:hover::after { transform: translateX(0); }
+    .btn-primary { background: var(--wine); color: #fff; }
+    .btn-primary:hover { background: var(--wine-dark); transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: var(--wine); border: 2px solid var(--wine); }
+    .btn-outline:hover { background: var(--wine); color: #fff; transform: translateY(-1px); }
+    .btn-orange { background: var(--orange); color: #fff; }
+    .btn-orange:hover { background: var(--orange-glow); transform: translateY(-1px); }
+
+    /* NAV */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 0 32px; height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    #navbar.scrolled { border-color: var(--light-gray); box-shadow: 0 4px 32px rgba(0,0,0,.06); }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-icon {
+      width: 36px; height: 36px; background: var(--wine); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .logo-icon::after {
+      content: ''; position: absolute; width: 18px; height: 18px;
+      border: 3px solid var(--orange); border-radius: 50%;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+    }
+    .logo-icon::before {
+      content: ''; position: absolute; width: 30px; height: 1.5px;
+      background: rgba(255,255,255,.5); transform: rotate(-35deg);
+    }
+    .logo-text { font-family: var(--font-display); font-size: 22px; letter-spacing: 3px; color: var(--dark); }
+    .logo-text span { color: var(--wine); }
+    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-family: var(--font-condensed); font-size: 13px;
+      letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
+      color: var(--text); text-decoration: none;
+      position: relative; padding-bottom: 4px; transition: color .2s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 2px; background: var(--orange); transition: width .3s ease;
+    }
+    .nav-links a:hover { color: var(--wine); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta { display: flex; align-items: center; gap: 16px; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--dark); transition: all .3s ease; }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+    .mobile-menu {
+      display: none; position: fixed; top: 72px; left: 0; right: 0;
+      background: #fff; z-index: 999;
+      padding: 24px; border-bottom: 3px solid var(--wine);
+      box-shadow: 0 12px 48px rgba(0,0,0,.1);
+      transform: translateY(-10px); opacity: 0; transition: all .3s ease;
+    }
+    .mobile-menu.open { transform: translateY(0); opacity: 1; }
+    .mobile-menu ul { list-style: none; }
+    .mobile-menu ul li { border-bottom: 1px solid var(--light-gray); }
+    .mobile-menu ul li a {
+      display: block; padding: 16px 0;
+      font-family: var(--font-condensed); font-size: 16px;
+      letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
+      color: var(--text); text-decoration: none;
+    }
+    .mobile-menu .mobile-cta { margin-top: 20px; }
+
+    /* HERO
+       ─────────────────────────────────────────────────────
+       TO ADD YOUR BACKGROUND IMAGE:
+         1. Place your image file alongside this HTML file
+         2. In the #hero rule below, change  url('')
+            to  url('your-photo.jpg')   (or .png / .webp)
+         3. Adjust --hero-overlay-opacity if needed (0 = no overlay, 1 = full white)
+       ─────────────────────────────────────────────────────
+    */
+    :root { --hero-overlay-opacity: 0.67; }
+
+    #hero {
+      min-height: 100vh; padding-top: 72px;
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+      /* ↓ Replace '' with your image path */
+      background-image: url('sat.jpg');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: var(--white); /* fallback when no image is set */
+    }
+    /* White overlay so text stays readable over any photo */
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 1;
+      background: rgba(255, 255, 255, var(--hero-overlay-opacity));
+    }
+    .hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(139,26,26,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,26,26,.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridPan 20s linear infinite;
+    }
+    @keyframes gridPan {
+      0%   { background-position: 0 0; }
+      100% { background-position: 60px 60px; }
+    }
+    .hero-arc {
+      position: absolute; right: -80px; top: 50%; transform: translateY(-50%);
+      width: 680px; height: 680px; border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, rgba(217,84,30,.08), rgba(139,26,26,.05), transparent 70%);
+      border: 1px solid rgba(139,26,26,.08);
+    }
+    .hero-arc-2 {
+      position: absolute; right: 40px; top: 50%; transform: translateY(-50%);
+      width: 500px; height: 500px; border-radius: 50%;
+      border: 1px solid rgba(217,84,30,.12);
+      animation: pulse 4s ease-in-out infinite;
+    }
+    .hero-arc-3 {
+      position: absolute; right: 120px; top: 50%; transform: translateY(-50%);
+      width: 340px; height: 340px; border-radius: 50%;
+      border: 1px solid rgba(217,84,30,.2);
+      animation: pulse 4s ease-in-out infinite .8s;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: translateY(-50%) scale(1); opacity: 1; }
+      50%       { transform: translateY(-50%) scale(1.03); opacity: .7; }
+    }
+    .hero-satellite {
+      position: absolute; right: 160px; top: 50%; transform: translateY(-50%);
+      width: 220px; height: 220px;
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(-50%) rotate(-3deg); }
+      50%       { transform: translateY(calc(-50% - 16px)) rotate(3deg); }
+    }
+    .sat-body {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px; height: 46px;
+      background: linear-gradient(135deg, var(--wine-light), var(--wine-dark));
+      border-radius: 6px; box-shadow: 0 8px 32px rgba(139,26,26,.4);
+    }
+    .sat-panel {
+      position: absolute; top: 50%; height: 16px; width: 90px;
+      background: linear-gradient(90deg, var(--orange), var(--orange-light));
+      border-radius: 2px; box-shadow: 0 4px 16px rgba(217,84,30,.5);
+      transform: translateY(-50%);
+    }
+    .sat-panel.left  { right: calc(100% + 6px); }
+    .sat-panel.right { left:  calc(100% + 6px); }
+    .sat-dish {
+      position: absolute; bottom: calc(100% + 4px); left: 50%;
+      transform: translateX(-50%); width: 20px; height: 14px;
+      border-radius: 50% 50% 0 0;
+      border: 3px solid rgba(255,255,255,.8); border-bottom: none;
+    }
+    .sat-signal {
+      position: absolute; bottom: -30px; left: 50%;
+      width: 0; height: 0;
+      border-left: 24px solid transparent; border-right: 24px solid transparent;
+      border-top: 30px solid rgba(217,84,30,.2);
+      transform: translateX(-50%);
+      animation: signalPulse 2s ease-in-out infinite;
+    }
+    @keyframes signalPulse {
+      0%, 100% { opacity: .3; transform: translateX(-50%) scale(1); }
+      50%       { opacity: .8; transform: translateX(-50%) scale(1.1); }
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 620px; }
+    .hero-eyebrow  { margin-bottom: 24px; animation: fadeUp .8s ease .1s both; }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(56px, 8vw, 108px); line-height: .92;
+      color: var(--dark); margin-bottom: 28px;
+      animation: fadeUp .8s ease .2s both;
+    }
+    .hero-title em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--wine), var(--orange));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+       font-size: 17px; line-height: 1.7; color: var(--text);
+      max-width: 480px; margin-bottom: 40px; font-weight: 400;
+      text-align: justify;
+      animation: fadeUp .8s ease .3s both;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; animation: fadeUp .8s ease .4s both; }
+    .hero-stats {
+      display: flex; gap: 48px; margin-top: 64px;
+      padding-top: 48px; border-top: 1px solid var(--light-gray);
+      animation: fadeUp .8s ease .5s both;
+    }
+    .stat-item { display: flex; flex-direction: column; gap: 4px; }
+    .stat-num {
+      font-family: var(--font-display); font-size: 42px;
+      background: linear-gradient(135deg, var(--wine), var(--orange));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-label {
+      font-family: var(--font-condensed); font-size: 11px;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--mid-gray); font-weight: 600;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* TICKER */
+    .ticker { background: var(--wine-dark); color: #fff; padding: 12px 0; overflow: hidden; }
+    .ticker-track { display: flex; animation: ticker 30s linear infinite; white-space: nowrap; }
+    .ticker-item {
+      display: inline-flex; align-items: center; gap: 12px; padding: 0 40px;
+      font-family: var(--font-condensed); font-size: 12px;
+      letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600; opacity: .9;
+    }
+    .ticker-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--orange-light); flex-shrink: 0; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* SECTION SHARED */
+    section { padding: 100px 0; }
+    .section-head { display: flex; flex-direction: column; gap: 16px; margin-bottom: 64px; }
+    .section-head.center { align-items: center; text-align: center; }
+    .section-title { font-family: var(--font-display); font-size: clamp(38px, 5vw, 64px); line-height: 1; color: var(--dark); }
+    .section-desc {
+      font-size: 16px; line-height: 1.7; color: var(--mid-gray);
+      max-width: 520px; font-weight: 400;
+      text-align: justify;
+    }
+    .section-head.center .section-desc { text-align: center; }
+
+    /* SERVICES */
+    #services { background: var(--off-white); }
+    .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+    .service-card {
+      background: #fff; padding: 44px 36px;
+      position: relative; overflow: hidden;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .service-card::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--wine), var(--orange));
+      transform: scaleX(0); transform-origin: left; transition: transform .4s ease;
+    }
+    .service-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,.08); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-icon {
+      width: 56px; height: 56px; margin-bottom: 28px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 4px;
+      background: linear-gradient(135deg, rgba(139,26,26,.08), rgba(217,84,30,.08));
+    }
+    .service-icon svg { width: 28px; height: 28px; }
+    .service-num {
+      position: absolute; top: 28px; right: 28px;
+      font-family: var(--font-display); font-size: 64px;
+      color: rgba(139,26,26,.05); line-height: 1; pointer-events: none;
+    }
+    .service-name {
+      font-family: var(--font-condensed); font-size: 22px; font-weight: 700;
+      letter-spacing: 1px; color: var(--dark); margin-bottom: 14px;
+    }
+    .service-bullets {
+      list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;
+    }
+    .service-bullets li {
+      font-size: 14px; line-height: 1.7; color: var(--mid-gray);
+      padding-left: 18px; position: relative;
+    }
+    .service-bullets li::before {
+      content: '▸'; position: absolute; left: 0;
+      color: var(--orange); font-size: 13px;
+    }
+    .service-expand {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.4s ease;
+      opacity: 0; font-size: 14px; line-height: 1.8;
+      color: var(--mid-gray); margin-bottom: 0;
+      text-align: justify;
+    }
+    button.service-link {
+      background: none; border: none; padding: 0; cursor: pointer;
+      font-family: var(--font-condensed); font-size: 12px; letter-spacing: 2px;
+      text-transform: uppercase; font-weight: 700; color: var(--orange);
+      display: inline-flex; align-items: center; gap: 8px; transition: gap .2s;
+    }
+    button.service-link:hover { gap: 14px; }
+
+    /* ABOUT */
+    #about { padding: 100px 0; }
+    .about-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .about-visual { display: flex; flex-direction: column; gap: 16px; position: relative; }
+    .about-img-wrap {
+      width: 100%; aspect-ratio: 16/9;
+      background: linear-gradient(135deg, var(--wine-dark), var(--wine), var(--orange));
+      border-radius: 4px; position: relative; overflow: hidden;
+    }
+    .about-img-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .about-img-text {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    }
+    .about-img-big { font-family: var(--font-display); font-size: 64px; color: rgba(255,255,255,.15); line-height: 1; }
+    .about-img-sub {
+      font-family: var(--font-condensed); font-size: 11px;
+      letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,.6); font-weight: 600;
+    }
+    .about-badge {
+      position: absolute; bottom: 12px; right: 12px;
+      background: #fff; padding: 16px 20px; border-radius: 3px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.15);
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .about-badge-num {
+      font-family: var(--font-display); font-size: 36px;
+      background: linear-gradient(135deg, var(--wine), var(--orange));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1;
+    }
+    .about-badge-text {
+      font-family: var(--font-condensed); font-size: 10px; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--mid-gray); font-weight: 600;
+    }
+    .about-photo-slot {
+      width: 100%; aspect-ratio: 16/9; border-radius: 4px; overflow: hidden;
+      background: var(--light-gray); border: 2px dashed rgba(139,26,26,.2);
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .about-photo-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .about-photo-slot .photo-placeholder {
+      display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--mid-gray);
+    }
+    .about-photo-slot .photo-placeholder svg { width: 36px; height: 36px; opacity: .4; }
+    .about-photo-slot .photo-placeholder span {
+      font-family: var(--font-condensed); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: .5;
+    }
+    .about-decor { position: absolute; top: -12px; left: -12px; width: 48px; height: 48px; z-index: 2; border-top: 3px solid var(--orange); border-left: 3px solid var(--orange); }
+    .about-decor-br { position: absolute; bottom: -12px; right: -12px; width: 48px; height: 48px; z-index: 2; border-bottom: 3px solid var(--wine); border-right: 3px solid var(--wine); }
+    .about-text .section-desc { max-width: 100%; text-align: justify; }
+    .about-features { margin-top: 36px; display: flex; flex-direction: column; gap: 16px; }
+    .about-feat {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 20px; border: 1px solid var(--light-gray); border-radius: 3px;
+      transition: border-color .3s, background .3s;
+    }
+    .about-feat:hover { border-color: var(--orange); background: rgba(217,84,30,.02); }
+    .about-feat-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--wine), var(--orange)); border-radius: 3px;
+    }
+    .about-feat-icon svg { width: 18px; height: 18px; color: #fff; }
+    .about-feat-text h4 {
+      font-family: var(--font-condensed); font-size: 14px; font-weight: 700;
+      letter-spacing: 1px; color: var(--dark); margin-bottom: 4px;
+    }
+    .about-feat-text p { font-size: 13px; color: var(--mid-gray); line-height: 1.6; text-align: justify; }
+
+    /* COVERAGE / TEAM */
+    #coverage { background: var(--dark); position: relative; overflow: hidden; }
+    .coverage-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .coverage-glow {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(139,26,26,.15), transparent 70%);
+      pointer-events: none;
+    }
+    #coverage .section-title { color: #fff; }
+    #coverage .section-desc  { color: rgba(255,255,255,.45); text-align: center; }
+    #coverage .tag { color: var(--orange-light); }
+    #coverage .tag::before { background: var(--orange-light); }
+    .coverage-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 64px; }
+    .metric {
+      padding: 44px 32px; background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06); position: relative; overflow: hidden;
+      transition: background .3s;
+    }
+    .metric:hover { background: rgba(255,255,255,.06); }
+    .metric::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--wine), var(--orange));
+      transform: scaleX(0); transform-origin: left; transition: transform .4s ease;
+    }
+    .metric:hover::after { transform: scaleX(1); }
+
+    /* ── TECHY NAME DISPLAY ── */
+    .metric-val {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 400;
+    letter-spacing: 2px;
+      line-height: 1.3;
+      background: linear-gradient(135deg, var(--orange), var(--wine-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 10px;
+      min-height: 1.4em;
+      position: relative;
+    }
+    /* Cursor blink shown while decoding */
+    .metric-val.decoding::after {
+      content: '|';
+      display: inline-block;
+      -webkit-text-fill-color: var(--orange);
+      color: var(--orange);
+      animation: blink .5s step-end infinite;
+      margin-left: 2px;
+    }
+    /* Scan-line flash on reveal */
+    .metric-val.decoded {
+      animation: scanReveal 0.6s ease forwards;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+    @keyframes scanReveal {
+      0%   { filter: brightness(3) saturate(0); }
+      40%  { filter: brightness(1.6) saturate(.5); }
+      100% { filter: brightness(1) saturate(1); }
+    }
+
+    .metric-unit { font-family: var(--font-condensed); font-size: 12px; color: rgba(255,255,255,.4); letter-spacing: 1px; margin-bottom: 12px; }
+    .metric-label { font-size: 13px; color: rgba(255,255,255,.5); line-height: 1.6; text-align: justify; }
+
+    /* CLIENTS */
+    #testimonials { background: var(--off-white); }
+    .clients-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .client-logo-card {
+      background: #fff; padding: 36px 32px 28px;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 0;
+      position: relative; overflow: hidden;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .client-logo-card::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--wine), var(--orange));
+      transform: scaleX(0); transform-origin: left; transition: transform .4s ease;
+    }
+    .client-logo-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,.08); }
+    .client-logo-card:hover::before { transform: scaleX(1); }
+
+    .client-img-wrap {
+      width: 100%; height: 100px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+      background: #fff;
+      border-radius: 3px; overflow: hidden;
+      border: 1.5px solid rgba(139,26,26,.1);
+      padding: 10px;
+      transition: border-color .3s;
+    }
+    .client-logo-card:hover .client-img-wrap { border-color: rgba(139,26,26,.25); }
+    .client-img-wrap img {
+      max-width: 100%;
+      max-height: 80px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      /* No grayscale — show logos in full colour */
+      filter: none;
+      opacity: 1;
+      transition: transform .3s ease;
+    }
+    .client-logo-card:hover .client-img-wrap img { transform: scale(1.05); }
+    .client-img-wrap .img-placeholder {
+      display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--mid-gray);
+    }
+    .client-img-wrap .img-placeholder svg { width: 28px; height: 28px; opacity: .35; }
+    .client-img-wrap .img-placeholder span {
+      font-family: var(--font-condensed); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: .45;
+    }
+    .client-name { font-family: var(--font-display); font-size: 20px; letter-spacing: 1.5px; color: var(--dark); text-align: center; margin-bottom: 6px; }
+    .client-sector { font-family: var(--font-condensed); font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--mid-gray); font-weight: 600; text-align: center; }
+
+    /* CTA */
+    #cta {
+      background: linear-gradient(135deg, var(--wine-dark) 0%, var(--wine) 50%, var(--orange) 100%);
+      padding: 120px 0; position: relative; overflow: hidden; text-align: center;
+    }
+    .cta-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    #cta .tag { color: rgba(255,255,255,.7); }
+    #cta .tag::before { background: rgba(255,255,255,.7); }
+    #cta .section-head { align-items: center; }
+    #cta .section-title { color: #fff; }
+    #cta .section-desc { color: rgba(255,255,255,.7); text-align: center; margin: 0 auto; }
+    .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-white { background: #fff; color: var(--wine); }
+    .btn-white:hover { background: rgba(255,255,255,.9); transform: translateY(-1px); }
+    .btn-ghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.4); }
+    .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,.1); }
+
+    /* CONTACT */
+    #contact { padding: 100px 0; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: start; }
+    .contact-info { display: flex; flex-direction: column; gap: 32px; }
+    .contact-item { display: flex; gap: 20px; align-items: flex-start; }
+    .contact-ico {
+      width: 48px; height: 48px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(139,26,26,.08), rgba(217,84,30,.08));
+      border-radius: 3px; display: flex; align-items: center; justify-content: center;
+    }
+    .contact-ico svg { width: 22px; height: 22px; color: var(--wine); }
+    .contact-item h4 {
+      font-family: var(--font-condensed); font-size: 13px; letter-spacing: 2px;
+      text-transform: uppercase; font-weight: 700; color: var(--mid-gray); margin-bottom: 4px;
+    }
+    .contact-item p { font-size: 15px; color: var(--dark); font-weight: 500; }
+    .contact-form { display: flex; flex-direction: column; gap: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label {
+      font-family: var(--font-condensed); font-size: 11px; letter-spacing: 2px;
+      text-transform: uppercase; font-weight: 700; color: var(--mid-gray);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 14px 16px;
+      border: 1.5px solid var(--light-gray); border-radius: 2px;
+      font-family: var(--font-body); font-size: 15px; color: var(--text);
+      background: #fff; outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--wine); box-shadow: 0 0 0 3px rgba(139,26,26,.08);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    /* FOOTER */
+    footer { background: var(--dark); color: #fff; padding: 72px 0 36px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 64px; }
+    .footer-brand p { font-size: 14px; color: rgba(255,255,255,.45); line-height: 1.8; margin: 16px 0 24px; max-width: 280px; text-align: justify; }
+    .footer-social { display: flex; gap: 10px; }
+    .social-link {
+      width: 36px; height: 36px; border-radius: 2px;
+      border: 1px solid rgba(255,255,255,.1);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; color: rgba(255,255,255,.5);
+      transition: border-color .2s, color .2s, background .2s;
+    }
+    .social-link:hover { border-color: var(--orange); color: var(--orange); background: rgba(217,84,30,.08); }
+    .footer-col h5 {
+      font-family: var(--font-condensed); font-size: 12px; letter-spacing: 2.5px;
+      text-transform: uppercase; font-weight: 700; color: var(--orange); margin-bottom: 20px;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a { font-size: 14px; color: rgba(255,255,255,.45); text-decoration: none; transition: color .2s; }
+    .footer-col ul li a:hover { color: #fff; }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 36px; border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .footer-bottom p { font-size: 13px; color: rgba(255,255,255,.3); }
+    .footer-logo-text { font-family: var(--font-display); font-size: 18px; letter-spacing: 3px; color: rgba(255,255,255,.2); }
+    .footer-logo-text span { color: var(--wine-light); }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .services-grid    { grid-template-columns: repeat(2, 1fr); }
+      .coverage-metrics { grid-template-columns: 1fr; }
+      .footer-grid      { grid-template-columns: 1fr 1fr; }
+      .about-inner      { grid-template-columns: 1fr; }
+      .contact-grid     { grid-template-columns: 1fr; gap: 48px; }
+      .clients-grid     { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      section { padding: 64px 0; }
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .mobile-menu { display: block; }
+
+      /* All multi-column grids → single column */
+      .services-grid    { grid-template-columns: 1fr; }
+      .coverage-metrics { grid-template-columns: 1fr; }
+      .clients-grid     { grid-template-columns: 1fr; }
+      .footer-grid      { grid-template-columns: 1fr; gap: 32px; }
+      .form-row         { grid-template-columns: 1fr; }
+
+      .hero-stats { gap: 24px; flex-wrap: wrap; }
+      .hero-satellite, .hero-arc, .hero-arc-2, .hero-arc-3 { display: none; }
+      .hero-grid { opacity: .4; }
+
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+      .footer-bottom p { font-size: 12px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-actions { flex-direction: column; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+      .cta-actions { flex-direction: column; align-items: center; }
+      .cta-actions .btn { width: 100%; max-width: 300px; justify-content: center; }
+      .hero-stats { gap: 20px; }
+      .stat-num { font-size: 34px; }
+    }
+.about-photo-slot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="#">
+    <div class="logo-icon"></div>
+    <span class="logo-text">ATANI <span>SATELLITE SERVICES</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <ul>
+    <li><a href="#services" class="mobile-link">Services</a></li>
+    <li><a href="#about"    class="mobile-link">About</a></li>
+    <li><a href="#contact"  class="mobile-link">Contact</a></li>
+  </ul>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-arc"></div>
+    <div class="hero-arc-2"></div>
+    <div class="hero-arc-3"></div>
+    <div class="hero-satellite">
+      <div class="sat-body">
+        <div class="sat-panel left"></div>
+        <div class="sat-panel right"></div>
+        <div class="sat-dish"></div>
+        <div class="sat-signal"></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow"><span class="tag">Connecting You Beyond Borders</span></div>
+      <h1 class="hero-title">SATELLITE<br>SOLUTIONS <em>MADE</em><br>EASY</h1>
+      <p class="hero-sub">Enterprise-grade satellite broadband, communication, and earth observation services engineered for industries that never stand still.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contact">Get Started →</a>
+        <a class="btn btn-outline" href="#services">Our Services</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num" data-target="99.9">0</span>
+          <span class="stat-label">% Uptime SLA</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="160">0</span>
+          <span class="stat-label">States Covered</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="48">0</span>
+          <span class="stat-label">Active Satellites</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" id="tickerTrack">
+    <span class="ticker-item"><span class="ticker-dot"></span>Atanisat — Your Transmission Journey Begins Here</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>High-Speed Network Infrastructure</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Tailored Transmission Solutions</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Voice &amp; Data Networks</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Cost-Effective Connectivity</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Cutting Edge Technology</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Bundled Voice, Data &amp; Multimedia</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Customer-First Engineering</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Flexible Network Solutions</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Business-Grade Transmission</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Single Platform Delivery</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Innovative Connectivity Solutions</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Operator-Grade Infrastructure</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>End-to-End Network Control</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Jumpstart Your Business</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item"><span class="ticker-dot"></span>Atanisat — Your Transmission Journey Begins Here</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>High-Speed Network Infrastructure</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Tailored Transmission Solutions</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Voice &amp; Data Networks</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Cost-Effective Connectivity</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Cutting Edge Technology</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Bundled Voice, Data &amp; Multimedia</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Customer-First Engineering</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Flexible Network Solutions</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Business-Grade Transmission</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Single Platform Delivery</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Innovative Connectivity Solutions</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Operator-Grade Infrastructure</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>End-to-End Network Control</span>
+    <span class="ticker-item"><span class="ticker-dot"></span>Jumpstart Your Business</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="tag">What We Offer</span>
+      <h2 class="section-title">ATANI<br>SERVICES</h2>
+      <p class="section-desc">From fiber optic backbones to RF broadcast networks, Atani Satellite Services engineers end-to-end transmission solutions for businesses and operators who demand performance, flexibility and control.</p>
+    </div>
+    <div class="services-grid">
+
+      <div class="service-card reveal">
+        <span class="service-num">01</span>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--wine)">
+            <rect x="9" y="2" width="6" height="4" rx="1"/>
+            <rect x="2" y="18" width="6" height="4" rx="1"/>
+            <rect x="16" y="18" width="6" height="4" rx="1"/>
+            <path d="M12 6v4M12 10c-4 0-7 2-7 4v2M12 10c4 0 7 2 7 4v2"/>
+          </svg>
+        </div>
+        <h3 class="service-name">Business Network Solutions</h3>
+        <ul class="service-bullets">
+          <li>Dedicated Corporate Networks</li>
+          <li>LAN Interconnect Services</li>
+          <li>Managed IP-Based VPN Services</li>
+        </ul>
+        <div class="service-expand">At Atani Satellite Services Limited, we design and deliver corporate network solutions that seamlessly connect central and remote offices while enabling access to global networks. Our networks provide high-speed internet connectivity alongside advanced data management and transmission capabilities. Each solution is built with scalability in mind, allowing for future expansion, additional services, and increased usage. We also integrate separate LANs into a unified wide area network, ensuring efficient, reliable communication across your organization.</div>
+        <button class="service-link" onclick="toggleExpand(this)">Learn More <span>→</span></button>
+      </div>
+
+      <div class="service-card reveal">
+        <span class="service-num">02</span>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--wine)">
+            <path d="M3 12h4"/>
+            <path d="M17 12h4"/>
+            <path d="M7 12c0-4 2.5-7 5-7s5 3 5 7-2.5 7-5 7-5-3-5-7z"/>
+            <path d="M7 12c0 2 1 3.5 2.5 4"/>
+            <path d="M17 12c0-2-1-3.5-2.5-4"/>
+          </svg>
+        </div>
+        <h3 class="service-name">Fiber Optic Solutions</h3>
+        <ul class="service-bullets">
+          <li>Route Survey, Cable Laying, Splicing &amp; Termination</li>
+          <li>Testing &amp; Commissioning</li>
+          <li>As-Built Diagram</li>
+        </ul>
+        <div class="service-expand">At Atani Satellite Services Limited, we leverage the extensive training and experience of our personnel to deliver robust fiber optic network designs. Our project teams are equipped with state-of-the-art tools and testing equipment to ensure fast, reliable deployments. We apply proven project management practices to monitor progress and achieve timely delivery. We also have strong experience in managing community-related issues during fiber optic deployment projects.</div>
+        <button class="service-link" onclick="toggleExpand(this)">Learn More <span>→</span></button>
+      </div>
+
+      <div class="service-card reveal">
+        <span class="service-num">03</span>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--wine)">
+            <path d="M5 12.55a11 11 0 0114.08 0"/>
+            <path d="M1.42 9a16 16 0 0121.16 0"/>
+            <path d="M8.53 16.11a6 6 0 016.95 0"/>
+            <circle cx="12" cy="20" r="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <h3 class="service-name">RF Network &amp; Broadcast Solutions</h3>
+        <ul class="service-bullets">
+          <li>BTS Backhauls</li>
+          <li>Large Earth Station &amp; VSAT Installations</li>
+          <li>Broadband Setup and Installation</li>
+          <li>RF Verification, Equipment Testing &amp; Commissioning</li>
+        </ul>
+        <div class="service-expand">At Atani Satellite Services Limited, we provide RF network planning, design, and implementation services, including link budget analysis and calculations for satellite and microwave links. We install and maintain large satellite earth stations, VSAT BTS backhaul infrastructure, and microwave transmission systems, as well as broadcast infrastructure. As a systems integration company, our customers benefit from our extensive experience and technical expertise.</div>
+        <button class="service-link" onclick="toggleExpand(this)">Learn More <span>→</span></button>
+      </div>
+
+      <div class="service-card reveal">
+        <span class="service-num">04</span>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--wine)">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </div>
+        <h3 class="service-name">Professional Services</h3>
+        <ul class="service-bullets">
+          <li>Training &amp; Support Services</li>
+          <li>Consultancy Services</li>
+          <li>Project Management Services</li>
+        </ul>
+        <div class="service-expand">At Atani Satellite Services Limited, we deliver customized training programs to build capacity across all levels, from field engineers to senior management. We provide advanced consulting services to support network rollout and optimize existing infrastructure, with a strong focus on transmission performance. We also offer comprehensive system integration solutions for telecommunications operators and carriers, alongside technical network audits to ensure efficient utilization of infrastructure.</div>
+        <button class="service-link" onclick="toggleExpand(this)">Learn More <span>→</span></button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-inner">
+
+      <!-- LEFT: visual column -->
+      <div class="about-visual reveal">
+        <div class="about-decor"></div>
+        <div class="about-img-wrap">
+          <div class="about-img-grid"></div>
+          <div class="about-img-text">
+            <span class="about-img-big">ATANI</span>
+            <span class="about-img-sub">Satellite Services</span>
+            <div style="display:flex;gap:16px;margin-top:8px">
+              <div style="text-align:center">
+                <div style="font-family:var(--font-display);font-size:26px;color:rgba(255,255,255,.7)">LEO</div>
+                <div style="font-family:var(--font-condensed);font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.35);text-transform:uppercase">Connecting You</div>
+              </div>
+              <div style="text-align:center">
+                <div style="font-family:var(--font-display);font-size:26px;color:rgba(255,255,255,.7)">MEO</div>
+                <div style="font-family:var(--font-condensed);font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.35);text-transform:uppercase">Beyond Borders</div>
+              </div>
+            </div>
+          </div>
+          <div class="about-badge">
+            <span class="about-badge-num">18+</span>
+            <span class="about-badge-text">Years in the industry</span>
+          </div>
+        </div>
+
+        <!-- Second image — replace src with your photo -->
+        <div class="about-photo-slot">
+          <img src="sat2.jpg" alt="">
+          <div class="photo-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            <span>Insert your image here</span>
+          </div>
+        </div>
+        <div class="about-decor-br"></div>
+      </div>
+
+      <!-- RIGHT: text column -->
+      <div class="about-text reveal">
+        <div class="section-head" style="margin-bottom:36px">
+          <span class="tag">Who we are</span>
+          <h2 class="section-title">ABOUT<br>ATANI</h2>
+          <p class="section-desc">At Atani Satellite Services Limited, we recognize that our greatest strength is our people. We are therefore committed to investing in targeted training and professional development to ensure effective, high-quality service delivery to our customers. Our team has undertaken training in VSAT Technology and applications, CASS-B-MAX system specialist, TV and Radio broadcast installations, Fiber optic planning, design and deployment.</p>
+        </div>
+        <div class="about-features">
+          <div class="about-feat">
+            <div class="about-feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="10"/>
+                <circle cx="12" cy="12" r="6"/>
+                <circle cx="12" cy="12" r="2"/>
+                <path d="M22 12h-4M6 12H2M12 6V2M12 22v-4"/>
+              </svg>
+            </div>
+            <div class="about-feat-text">
+              <h4>Our Mission</h4>
+              <p>Our mission is to design, build, and deliver high-speed transmission infrastructure that meets the specific needs of businesses and network operators. We strive to understand each customer's unique requirements, develop cost-effective solutions, and provide reliable platforms that seamlessly integrate voice, data, and multimedia services using advanced technology.</p>
+            </div>
+          </div>
+          <div class="about-feat">
+            <div class="about-feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+            <div class="about-feat-text">
+              <h4>Our Vision</h4>
+              <p>Our vision is to empower customers with greater choice, flexibility, and control over their voice and data networks by continuously delivering innovative, scalable, and customer-focused connectivity solutions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="coverage">
+  <div class="coverage-bg"></div>
+  <div class="coverage-glow"></div>
+  <div class="container" style="position:relative;z-index:2">
+    <div class="section-head center reveal">
+      <span class="tag">Our People</span>
+      <h2 class="section-title">THE ATANI<br>TEAM</h2>
+      <p class="section-desc">Get to know the minds behind the brand.</p>
+    </div>
+    <div class="coverage-metrics">
+      <div class="metric reveal">
+        <div class="metric-val" data-name="Augustine Okaro"></div>
+        <div class="metric-unit">B.ENG in Electrical Electronics</div>
+        <p class="metric-label">Mr. Okaro is a multiple disciplined Telecommunications engineer with over 20 years of wide-ranging experience gained in the telecommunication industry. His experience spans satellite communication, fibre optics, RF/Microwave and IT implementation.</p>
+      </div>
+      <div class="metric reveal">
+        <div class="metric-val" data-name="Obiako Ogechukwu"></div>
+        <div class="metric-unit">MSc Oil &amp; Gas Engineering, B.ENG in Electronic Engineering</div>
+        <p class="metric-label">He is a specialist in satellite ground stations with senior-level experience spanning 18 years in related areas of international telecommunications including sub-sea cables, backhaul, and switched voice and data networks.</p>
+      </div>
+      <div class="metric reveal">
+        <div class="metric-val" data-name="Chris Umeh"></div>
+        <div class="metric-unit">Director of Operations</div>
+        <p class="metric-label">Oversees day-to-day operations, client delivery and project management ensuring every solution is executed with precision and delivered on schedule.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENTS -->
+<section id="testimonials">
+  <div class="container">
+    <div class="section-head center reveal">
+      <span class="tag">Trusted by industry leaders</span>
+      <h2 class="section-title">FEATURED<br>ATANI CLIENTS</h2>
+      <p class="section-desc">Organisations that rely on Atani Satellite Services for mission-critical connectivity.</p>
+    </div>
+    <div class="clients-grid">
+
+      <div class="client-logo-card reveal">
+        <div class="client-img-wrap">
+          <img src="mtn.jpg" alt="MTN">
+        </div>
+        <span class="client-name">MTN</span>
+        <span class="client-sector">Telecommunications</span>
+      </div>
+
+      <div class="client-logo-card reveal">
+        <div class="client-img-wrap">
+          <img src="iom1.jpg" alt="IOM">
+        </div>
+        <span class="client-name">IOM</span>
+        <span class="client-sector">International Organisation for Migration</span>
+      </div>
+
+      <div class="client-logo-card reveal">
+        <div class="client-img-wrap">
+          <img src="radio.jpg" alt="Radio">
+        </div>
+        <span class="client-name">FEDERAL RADIO CORPORATION OF NIGERIA</span>
+        <span class="client-sector">Broadcasting &amp; Media</span>
+      </div>
+
+      <div class="client-logo-card reveal">
+        <div class="client-img-wrap">
+          <img src="immigration.jpeg" alt="Immigration">
+        </div>
+        <span class="client-name">NIGERIA IMMIGRATION SERVICE</span>
+        <span class="client-sector">Government &amp; Public Sector</span>
+      </div>
+
+      <div class="client-logo-card reveal">
+        <div class="client-img-wrap">
+          <img src="zte.png" alt="ZTE">
+        </div>
+        <span class="client-name">ZTE</span>
+        <span class="client-sector">Technology &amp; Infrastructure</span>
+      </div>
+
+      <div class="client-logo-card reveal">
+        <div class="client-img-wrap">
+          <img src="helios.jpg" alt="Helios">
+        </div>
+        <span class="client-name">HELIOS TOWERS</span>
+        <span class="client-sector">Investment &amp; Telecoms</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-bg"></div>
+  <div class="container" style="position:relative;z-index:2">
+    <div class="section-head center">
+      <span class="tag" style="color:rgba(255,255,255,.7)">Ready to Launch?</span>
+      <h2 class="section-title" style="color:#fff;font-size:clamp(48px,7vw,96px)">YOUR SIGNAL.<br>OUR SATELLITES.</h2>
+      <p class="section-desc" style="color:rgba(255,255,255,.65);text-align:center;margin:0 auto">Schedule a session with our engineers.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="#contact" class="btn btn-white">Contact Us→</a>
+      <a href="tel:+18005550100" class="btn btn-ghost">☏&nbsp; Phone An Engineer</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-head reveal" style="margin-bottom:56px">
+      <span class="tag">Get In Touch</span>
+      <h2 class="section-title">LET'S CONNECT</h2>
+      <p class="section-desc">Tell us about your project and one of our satellite engineers will respond within 4 business hours.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+
+        <div class="contact-item">
+          <div class="contact-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.22 1.2 2 2 0 012.18 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>
+          </div>
+          <div>
+            <h4>Phone</h4>
+            <p>+234(0)8052368826</p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div>
+            <h4>Email Us</h4>
+            <p>aokaro@atanicom.com</p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <h4>Office Hours</h4>
+            <p>Weekdays: 08:00 - 18:00 &nbsp;|&nbsp; Saturdays: 10:00 – 16:00 WAT</p>
+          </div>
+        </div>
+
+      </div>
+
+      <form class="contact-form reveal" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" placeholder="John" required>
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" placeholder="Smith" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="john@company.com" required>
+        </div>
+        <div class="form-group">
+          <label for="service">Service Interest</label>
+          <select id="service">
+            <option value="">Select a service…</option>
+            <option>Business Network Solutions</option>
+            <option>Fiber Optic Solutions</option>
+            <option>RF Network &amp; Broadcast Solutions</option>
+            <option>Professional Services</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" placeholder="Describe your project, location, and bandwidth requirements…"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="align-self:flex-start" id="submitBtn">Send Message →</button>
+        <div id="formMsg" style="display:none;padding:14px 20px;background:rgba(139,26,26,.08);border-left:3px solid var(--wine);font-size:14px;color:var(--wine);font-weight:500"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="#" style="margin-bottom:4px;display:inline-flex">
+          <div class="logo-icon"></div>
+          <span class="logo-text" style="color:#fff">ATANI <span>SATELLITE SERVICES</span></span>
+        </a>
+        <p>Engineering the transmission infrastructure that keeps businesses and operators connected — wherever you are in the world.</p>
+        <div class="footer-social">
+          <a href="#" class="social-link" aria-label="LinkedIn">in</a>
+          <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+          <a href="#" class="social-link" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="#services">Business Networks</a></li>
+          <li><a href="#services">Fiber Optic</a></li>
+          <li><a href="#services">RF &amp; Broadcast</a></li>
+          <li><a href="#services">Professional Services</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#coverage">Our Team</a></li>
+          <li><a href="#testimonials">Clients</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Atani Satellite Services Limited. All rights reserved.</p>
+      <span class="footer-logo-text">ATANI <span>SAT</span></span>
+      <p>
+        <a href="#" style="color:rgba(255,255,255,.3);text-decoration:none;margin-right:16px">Privacy Policy</a>
+        <a href="#" style="color:rgba(255,255,255,.3);text-decoration:none">Terms of Service</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── NAV SCROLL ── */
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 20));
+
+  /* ── HAMBURGER ── */
+  const hamburger   = document.getElementById('hamburger');
+  const mobileMenu  = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  document.querySelectorAll('.mobile-link').forEach(link =>
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    })
+  );
+
+  /* ── SCROLL REVEAL ── */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const siblings = [...entry.target.parentElement.querySelectorAll('.reveal')];
+        const idx = siblings.indexOf(entry.target);
+        entry.target.style.transitionDelay = `${idx * 80}ms`;
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  /* ── ANIMATED COUNTERS ── */
+  function animateCounter(el, target, decimals, duration) {
+    duration = duration || 1800;
+    let start = null;
+    const step = ts => {
+      if (!start) start = ts;
+      const prog = Math.min((ts - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - prog, 3);
+      el.textContent = decimals ? (ease * target).toFixed(1) : Math.floor(ease * target);
+      if (prog < 1) requestAnimationFrame(step);
+      else el.textContent = decimals ? target.toFixed(1) : target;
+    };
+    requestAnimationFrame(step);
+  }
+  const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el  = entry.target;
+        const raw = el.dataset.target;
+        const val = parseFloat(raw);
+        animateCounter(el, val, raw.includes('.') ? 1 : 0);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
+
+  /* ── TECHY DECODE ANIMATION (team names) ── */
+  const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@$%&*+=<>';
+
+  function decodeName(el, fullName) {
+    const chars = fullName.split('');
+    const total = chars.length;
+    let revealed = 0;
+    let frame    = 0;
+    const FRAMES_PER_CHAR = 3; // scramble cycles before locking each character
+
+    el.classList.add('decoding');
+
+    const id = setInterval(() => {
+      frame++;
+
+      // Lock one more character every FRAMES_PER_CHAR frames
+      if (frame % FRAMES_PER_CHAR === 0 && revealed < total) revealed++;
+
+      const display = chars.map((ch, i) => {
+        if (ch === ' ') return ' ';
+        if (i < revealed) return ch;
+        return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+      }).join('');
+
+      el.textContent = display;
+
+      if (revealed >= total) {
+        clearInterval(id);
+        el.textContent = fullName;
+        el.classList.remove('decoding');
+        el.classList.add('decoded');
+      }
+    }, 18);
+  }
+
+  const nameObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el   = entry.target;
+        const name = el.dataset.name;
+        if (!name) return;
+        setTimeout(() => decodeName(el, name), 300);
+        nameObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-name]').forEach(el => nameObserver.observe(el));
+
+  /* ── ACTIVE NAV HIGHLIGHT ── */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const linkObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => {
+          a.style.color = a.getAttribute('href') === `#${entry.target.id}` ? 'var(--wine)' : '';
+        });
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => linkObserver.observe(s));
+
+  /* ── SERVICE EXPAND ── */
+  function toggleExpand(btn) {
+    const expand = btn.previousElementSibling;
+    const isOpen = expand.style.maxHeight && expand.style.maxHeight !== '0px';
+    if (isOpen) {
+      expand.style.maxHeight  = '0';
+      expand.style.opacity    = '0';
+      expand.style.marginBottom = '0';
+      btn.innerHTML = 'Learn More <span>→</span>';
+    } else {
+      expand.style.maxHeight  = expand.scrollHeight + 'px';
+      expand.style.opacity    = '1';
+      expand.style.marginBottom = '16px';
+      btn.innerHTML = 'Close <span>↑</span>';
+    }
+  }
+
+  /* ── FORM SUBMIT ── */
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const msg = document.getElementById('formMsg');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.style.display = 'none';
+      msg.style.display = 'block';
+      msg.textContent   = '✓ Message received! An Atani engineer will contact you within 4 hours.';
+    }, 1200);
+  }
+</script>
+</body>
+</html>

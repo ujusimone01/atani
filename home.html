@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLACIER | Advanced Cooling</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --accent: #00e5ff;
+            --card-bg: #111111;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 5%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-left: 2.5rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 80%);
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            margin: 0;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            margin: 1.5rem 0 3rem;
+            font-size: 1.2rem;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--accent);
+            padding: 1rem 3rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            border-radius: 2px;
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+        }
+
+        /* Product Grid */
+        .products-section {
+            padding: 5rem 5%;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 4rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 3rem 2rem;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 229, 255, 0.5);
+        }
+
+        /* Abstract CSS representation of a fridge */
+        .fridge-graphic {
+            width: 120px;
+            height: 240px;
+            background: linear-gradient(145deg, #222, #0a0a0a);
+            margin: 0 auto 2rem;
+            border-radius: 4px;
+            border-left: 2px solid #555;
+            position: relative;
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Fridge Door Line */
+        .fridge-graphic::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 1px;
+            background: #000;
+        }
+
+        /* Techy Glowing Display */
+        .tech-display {
+            position: absolute;
+            top: 30px;
+            right: 15px;
+            width: 15px;
+            height: 30px;
+            background: #000;
+            border-radius: 2px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 5px var(--accent);
+        }
+
+        .card h3 {
+            margin: 0 0 1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .btn-small {
+            padding: 0.8rem 2rem;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">GLACIER<span>.</span></div>
+        <div class="nav-links">
+            <a href="#collection">Collection</a>
+            <a href="#">Smart OS</a>
+            <a href="#">Cart (0)</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>THE ART OF COLD</h1>
+        <p>Minimalist design meets quantum cooling technology. Engineered for the modern, connected home.</p>
+        <button class="btn" onclick="scrollToCollection()">Explore Collection</button>
+    </section>
+
+    <section id="collection" class="products-section">
+        <h2 class="section-title">2026 LINEUP</h2>
+        <div class="grid">
+            
+            <div class="card">
+                <div class="fridge-graphic">
+                    <div class="tech-display"></div>
+                </div>
+                <h3>Series X / Multi-Zone</h3>
+                <p>AI-driven temperature routing with dual inverter compressors.</p>
+                <button class="btn btn-small" onclick="addToCart('Series X')">View Specs</button>
+            </div>
+
+            <div class="card">
+                <div class="fridge-graphic" style="width: 90px;">
+                    <div class="tech-display" style="right: 10px;"></div>
+                </div>
+                <h3>Series S / Column</h3>
+                <p>Seamless flush-mount design for architectural integration.</p>
+                <button class="btn btn-small" onclick="addToCart('Series S')">View Specs</button>
+            </div>
+
+            <div class="card">
+                <div class="fridge-graphic" style="background: linear-gradient(145deg, #112, #001);">
+                    <div class="tech-display" style="background: rgba(0,229,255,0.2);"></div>
+                </div>
+                <h3>Series Pro / Glass</h3>
+                <p>Insta-view smart panel with full IoT home connectivity.</p>
+                <button class="btn btn-small" onclick="addToCart('Series Pro')">View Specs</button>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        // Smooth scrolling for the hero button
+        function scrollToCollection() {
+            document.getElementById('collection').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        // Simple cart interaction logic
+        function addToCart(productName) {
+            // Replaces an annoying pop-up with a sleek console message/UI trigger in a real app
+            let cartLink = document.querySelector('.nav-links a:last-child');
+            cartLink.style.color = 'var(--accent)';
+            cartLink.textContent = 'Cart (1)';
+            
+            setTimeout(() => {
+                cartLink.style.color = 'var(--text-main)';
+            }, 500);
+        }
+    </script>
+
+</body>
+</html>
