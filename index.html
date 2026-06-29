@@ -1124,7 +1124,7 @@
 
       </div>
 
-      <form class="contact-form reveal" onsubmit="handleSubmit(event)">
+      <form class="contact-form reveal" name="contact" data-netlify="true" onsubmit="handleSubmit(event)">
         <div class="form-row">
           <div class="form-group">
             <label for="fname">First Name</label>
@@ -1350,16 +1350,37 @@
 
   /* ── FORM SUBMIT ── */
   function handleSubmit(e) {
-    e.preventDefault();
-    const btn = document.getElementById('submitBtn');
-    const msg = document.getElementById('formMsg');
-    btn.textContent = 'Sending…';
-    btn.disabled = true;
-    setTimeout(() => {
-      btn.style.display = 'none';
-      msg.style.display = 'block';
-      msg.textContent   = '✓ Message received! An Atani engineer will contact you within 4 hours.';
-    }, 1200);
+  e.preventDefault();
+
+  const form = e.target;
+  const btn = document.getElementById('submitBtn');
+  const msg = document.getElementById('formMsg');
+
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  const formData = new FormData(form);
+
+  fetch('/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams(formData).toString()
+  })
+  .then(() => {
+    btn.style.display = 'none';
+    msg.style.display = 'block';
+    msg.textContent =
+      '✓ Message received! An Atani engineer will contact you within 4 hours.';
+  })
+  .catch(() => {
+    btn.textContent = 'Send Message →';
+    btn.disabled = false;
+    msg.style.display = 'block';
+    msg.textContent =
+      'Unable to send message. Please try again.';
+  });
   }
 </script>
 </body>
